@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class GitFlowAVHBranchChooseDialog extends DialogWrapper {
     private JPanel contentPane;
-    private JList branchList;
+    private JList<Object> branchList;
 
 
     public GitFlowAVHBranchChooseDialog(Project project, List<String> branchNames) {

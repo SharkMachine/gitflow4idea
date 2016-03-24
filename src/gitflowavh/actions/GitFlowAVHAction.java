@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public abstract class GitFlowAVHAction extends DumbAwareAction {
     Project myProject;
     GitFlowAVH myGitflow = ServiceManager.getService(GitFlowAVH.class);
-    ArrayList<GitRepository> repos = new ArrayList<GitRepository>();
+    ArrayList<GitRepository> repos = new ArrayList<>();
     GitRepository repo;
     GitFlowAVHBranchUtil branchUtil;
 
@@ -61,7 +61,7 @@ public abstract class GitFlowAVHAction extends DumbAwareAction {
     }
 
     //returns true if merge successful, false otherwise
-    public boolean handleMerge() {
+    boolean handleMerge() {
         //ugly, but required for intellij to catch up with the external changes made by
         //the CLI before being able to run the merge tool
         virtualFileMananger.syncRefresh();

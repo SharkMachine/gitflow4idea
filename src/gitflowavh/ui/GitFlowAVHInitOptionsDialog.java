@@ -4,13 +4,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.ui.CollectionComboBoxModel;
 import gitflowavh.GitFlowAVHInitOptions;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.List;
 
 
@@ -18,8 +16,8 @@ public class GitFlowAVHInitOptionsDialog extends DialogWrapper {
     private JPanel contentPane;
     private JCheckBox useNonDefaultConfigurationCheckBox;
 
-    private JComboBox productionBranchComboBox;
-    private JComboBox developmentBranchComboBox;
+    private JComboBox<ComboEntry> productionBranchComboBox;
+    private JComboBox<ComboEntry> developmentBranchComboBox;
     private JTextField featurePrefixTextField;
     private JTextField releasePrefixTextField;
     private JTextField hotfixPrefixTextField;
@@ -30,18 +28,13 @@ public class GitFlowAVHInitOptionsDialog extends DialogWrapper {
     public GitFlowAVHInitOptionsDialog(Project project, List<String> localBranches) {
         super(project);
 
-        setTitle("Options for gitflow init");
+        setTitle("Options for Gitflow Init");
 
-        productionBranchComboBox.setModel(new CollectionComboBoxModel(localBranches));
-        developmentBranchComboBox.setModel(new CollectionComboBoxModel(localBranches));
+        productionBranchComboBox.setModel(createBranchComboModel(localBranches));
+        developmentBranchComboBox.setModel(createBranchComboModel(localBranches));
 
         init();
-        useNonDefaultConfigurationCheckBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                enableFields(e.getStateChange()==ItemEvent.SELECTED);
-            }
-        });
+        useNonDefaultConfigurationCheckBox.addItemListener(e -> enableFields(e.getStateChange() == ItemEvent.SELECTED));
     }
 
     private void enableFields(boolean enable) {
@@ -55,13 +48,11 @@ public class GitFlowAVHInitOptionsDialog extends DialogWrapper {
         versionPrefixTextField.setEnabled(enable);
     }
 
-    public boolean useNonDefaultConfiguration()
-    {
+    private boolean useNonDefaultConfiguration() {
         return useNonDefaultConfigurationCheckBox.isSelected();
     }
 
-    public GitFlowAVHInitOptions getOptions()
-    {
+    public GitFlowAVHInitOptions getOptions() {
         GitFlowAVHInitOptions options = new GitFlowAVHInitOptions();
 
         options.setUseDefaults(!useNonDefaultConfigurationCheckBox.isSelected());
@@ -110,5 +101,30 @@ public class GitFlowAVHInitOptionsDialog extends DialogWrapper {
     @Override
     protected JComponent createCenterPanel() {
         return contentPane;
+    }
+
+    private ComboBoxModel<ComboEntry> createBranchComboModel(List<String> localBranches) {
+        ComboEntry[] entries = new ComboEntry[localBranches.size()];
+        for (int i = 1; i <= localBranches.size(); i++) {
+            String branchName = localBranches.get(i - 1);
+            entries[i] = new ComboEntry(branchName);
+        }
+        return new DefaultComboBoxModel<>(entries);
+    }
+
+    /**
+     * An entry for the branch selection dropdown/combo.
+     */
+    private static class ComboEntry {
+        private String branchName;
+
+        ComboEntry(String branchName) {
+            this.branchName = branchName;
+        }
+
+        @Override
+        public String toString() {
+            return branchName;
+        }
     }
 }

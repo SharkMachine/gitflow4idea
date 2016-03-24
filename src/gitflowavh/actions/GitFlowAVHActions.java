@@ -5,7 +5,6 @@ import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.util.AsyncResult;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import git4idea.branch.GitBranchUtil;
 import git4idea.repo.GitRepository;
 import gitflowavh.GitFlowAVH;
@@ -21,55 +20,37 @@ public class GitFlowAVHActions {
     Project myProject;
     GitFlowAVH myGitflow = ServiceManager.getService(GitFlowAVH.class);
     GitRepository repo;
-    GitFlowAVHBranchUtil branchUtil;
-
-    VirtualFileManager virtualFileMananger;
-
+    private GitFlowAVHBranchUtil branchUtil;
 
     String currentBranchName;
 
-    String featurePrefix;
-    String releasePrefix;
-    String hotfixPrefix;
-    String bugfixPrefix;
-    String masterBranch;
-    String developBranch;
+    private boolean noRemoteTrackBranches;
+    private boolean noRemoteFeatureBranches;
 
-    boolean noRemoteTrackBranches;
-    boolean noRemoteFeatureBranches;
-
-    boolean trackedAllFeatureBranches;
-    boolean trackedAllReleaseBranches;
+    private boolean trackedAllFeatureBranches;
+    private boolean trackedAllReleaseBranches;
 
     public GitFlowAVHActions(@NotNull Project project) {
         myProject = project;
         branchUtil = new GitFlowAVHBranchUtil(project);
-        virtualFileMananger = VirtualFileManager.getInstance();
 
         repo = GitBranchUtil.getCurrentRepository(myProject);
-
 
         if (repo != null) {
             currentBranchName = GitBranchUtil.getBranchNameOrRev(repo);
         }
 
-        featurePrefix = GitFlowAVHConfigUtil.getFeaturePrefix(myProject);
-        releasePrefix = GitFlowAVHConfigUtil.getReleasePrefix(myProject);
-        hotfixPrefix = GitFlowAVHConfigUtil.getHotfixPrefix(myProject);
-        bugfixPrefix = GitFlowAVHConfigUtil.getBugfixPrefix(myProject);
-        masterBranch = GitFlowAVHConfigUtil.getMasterBranch(myProject);
-        developBranch = GitFlowAVHConfigUtil.getDevelopBranch(myProject);
+        String featurePrefix = GitFlowAVHConfigUtil.getFeaturePrefix(myProject);
+        String releasePrefix = GitFlowAVHConfigUtil.getReleasePrefix(myProject);
 
-        if (releasePrefix != null) {
-            noRemoteTrackBranches = branchUtil.getRemoteBranchesWithPrefix(releasePrefix).isEmpty();
-            trackedAllReleaseBranches = branchUtil.areAllBranchesTracked(releasePrefix);
-        }
         if (featurePrefix != null) {
             noRemoteFeatureBranches = branchUtil.getRemoteBranchesWithPrefix(featurePrefix).isEmpty();
             trackedAllFeatureBranches = branchUtil.areAllBranchesTracked(featurePrefix);
         }
-
-
+        if (releasePrefix != null) {
+            noRemoteTrackBranches = branchUtil.getRemoteBranchesWithPrefix(releasePrefix).isEmpty();
+            trackedAllReleaseBranches = branchUtil.areAllBranchesTracked(releasePrefix);
+        }
     }
 
     public boolean hasGitflow() {
@@ -158,7 +139,7 @@ public class GitFlowAVHActions {
         return actionGroup;
     }
 
-    public static void runMergeTool() {
+    static void runMergeTool() {
         git4idea.actions.GitResolveConflictsAction resolveAction = new git4idea.actions.GitResolveConflictsAction();
         AsyncResult<DataContext> asyncResult = DataManager.getInstance().getDataContextFromFocus();
         DataContext dataContext = asyncResult.getResult();

@@ -29,7 +29,7 @@ public class InitRepoAction extends GitFlowAVHAction {
             final LineHandler localLineHandler = new LineHandler();
             final GitFlowAVHInitOptions initOptions = optionsDialog.getOptions();
 
-            new Task.Backgroundable(myProject,"Initializing repo",false){
+            new Task.Backgroundable(myProject, "Initializing Repo",false){
                 @Override
                 public void run(@NotNull ProgressIndicator indicator) {
                     GitCommandResult result = myGitflow.initRepo(repo, initOptions, errorLineHandler, localLineHandler);

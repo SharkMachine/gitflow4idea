@@ -11,13 +11,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class FinishBugfixAction extends GitFlowAVHAction {
 
-    String customBugfixName = null;
+    private String customBugfixName = null;
 
     public FinishBugfixAction() {
         super("Finish Bugfix");
     }
 
-    public FinishBugfixAction(String name) {
+    private FinishBugfixAction(String name) {
         super("Finish Bugfix");
         customBugfixName = name;
     }

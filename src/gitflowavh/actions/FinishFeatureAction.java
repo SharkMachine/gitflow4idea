@@ -11,13 +11,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class FinishFeatureAction extends GitFlowAVHAction {
 
-    String customFeatureName = null;
+    private String customFeatureName = null;
 
     public FinishFeatureAction() {
         super("Finish Feature");
     }
 
-    FinishFeatureAction(String name) {
+    private FinishFeatureAction(String name) {
         super("Finish Feature");
         customFeatureName = name;
     }

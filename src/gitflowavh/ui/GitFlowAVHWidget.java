@@ -128,20 +128,11 @@ public class GitFlowAVHWidget extends GitBranchWidget implements GitRepositoryCh
      * Updates branch information on click
      */
     public Consumer<MouseEvent> getClickConsumer() {
-        return new Consumer<MouseEvent>() {
-            public void consume(MouseEvent mouseEvent) {
-                updateAsync();
-            }
-        };
+        return mouseEvent -> updateAsync();
     }
 
     private void updateAsync() {
-        ApplicationManager.getApplication().invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                update();
-            }
-        });
+        ApplicationManager.getApplication().invokeLater(this::update);
     }
 
     private void update() {

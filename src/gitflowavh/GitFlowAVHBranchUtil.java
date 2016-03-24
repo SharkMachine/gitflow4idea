@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class GitFlowAVHBranchUtil {
@@ -50,9 +51,7 @@ public class GitFlowAVHBranchUtil {
 
         try {
             command = (GitCommand) m.invoke(null, "flow"); // Now it's ok
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
@@ -77,9 +76,7 @@ public class GitFlowAVHBranchUtil {
 
         try {
             result = (GitCommandResult) m.invoke(null, handler); // Now it's ok
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
@@ -216,55 +213,27 @@ public class GitFlowAVHBranchUtil {
      */
     public ArrayList<String> getRemoteBranchesWithPrefix(String prefix) {
         ArrayList<String> remoteBranches = getRemoteBranchNames();
-        ArrayList<String> selectedBranches = new ArrayList<String>();
-
-        for (String branch : remoteBranches) {
-            if (branch.contains(prefix)) {
-                selectedBranches.add(branch);
-            }
-        }
-
-        return selectedBranches;
+        return remoteBranches.stream().filter(branch -> branch.contains(prefix)).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public ArrayList<String> filterBranchListByPrefix(Collection<String> inputBranches, String prefix) {
-        ArrayList<String> outputBranches = new ArrayList<String>();
-
-        for (String branch : inputBranches) {
-            if (branch.contains(prefix)) {
-                outputBranches.add(branch);
-            }
-        }
-
-        return outputBranches;
+        return inputBranches.stream().filter(branch -> branch.contains(prefix)).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public ArrayList<String> getRemoteBranchNames() {
-        ArrayList<GitRemoteBranch> remoteBranches = new ArrayList<GitRemoteBranch>(repo.getBranches().getRemoteBranches());
-        ArrayList<String> branchNameList = new ArrayList<String>();
-
-        for (GitRemoteBranch branch : remoteBranches) {
-            branchNameList.add(branch.getName());
-        }
-
-        return branchNameList;
+        ArrayList<GitRemoteBranch> remoteBranches = new ArrayList<>(repo.getBranches().getRemoteBranches());
+        return remoteBranches.stream().map(GitRemoteBranch::getName).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public ArrayList<String> getLocalBranchNames() {
-        ArrayList<GitLocalBranch> localBranches = new ArrayList<GitLocalBranch>(repo.getBranches().getLocalBranches());
-        ArrayList<String> branchNameList = new ArrayList<String>();
-
-        for (GitLocalBranch branch : localBranches) {
-            branchNameList.add(branch.getName());
-        }
-
-        return branchNameList;
+        ArrayList<GitLocalBranch> localBranches = new ArrayList<>(repo.getBranches().getLocalBranches());
+        return localBranches.stream().map(GitLocalBranch::getName).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public GitRemote getRemoteByBranch(String branchName) {
         GitRemote remote = null;
 
-        ArrayList<GitRemoteBranch> remoteBranches = new ArrayList<GitRemoteBranch>(repo.getBranches().getRemoteBranches());
+        ArrayList<GitRemoteBranch> remoteBranches = new ArrayList<>(repo.getBranches().getRemoteBranches());
 
         for (GitRemoteBranch branch : remoteBranches) {
             if (branch.getName().equals(branchName)) {

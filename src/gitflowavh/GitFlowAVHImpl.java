@@ -38,9 +38,7 @@ public class GitFlowAVHImpl extends GitImpl implements GitFlowAVH {
 
         try {
             command = (GitCommand) m.invoke(null, "flow"); // Now it's ok
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
@@ -65,9 +63,7 @@ public class GitFlowAVHImpl extends GitImpl implements GitFlowAVH {
 
         try {
             result = (GitCommandResult) m.invoke(null, handler); // Now it's ok
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
@@ -497,7 +493,7 @@ public class GitFlowAVHImpl extends GitImpl implements GitFlowAVH {
 
 
     private void setUrl(GitLineHandler h, GitRepository repository) {
-        ArrayList<GitRemote> remotes = new ArrayList<GitRemote>(repository.getRemotes());
+        ArrayList<GitRemote> remotes = new ArrayList<>(repository.getRemotes());
 
         // Make sure a remote repository is available
         if (!remotes.isEmpty()) {

@@ -12,16 +12,16 @@ import java.util.List;
 
 public abstract class AbstractBranchDeleteDialog extends DialogWrapper {
     private JPanel contentPane;
-    private JComboBox branchComboBox;
+    private JComboBox<ComboEntry> branchComboBox;
     private JCheckBox forceDeleteCheckBox;
     private JLabel mergeInfoText;
     private JLabel selectBranchLabel;
 
     protected Project project;
-    protected GitFlowAVHBranchUtil gitFlowAVHBranchUtil;
+    private GitFlowAVHBranchUtil gitFlowAVHBranchUtil;
 
 
-    public AbstractBranchDeleteDialog(Project project) {
+    AbstractBranchDeleteDialog(Project project) {
         super(project, false);
         this.project = project;
         this.gitFlowAVHBranchUtil = new GitFlowAVHBranchUtil(project);
@@ -39,7 +39,7 @@ public abstract class AbstractBranchDeleteDialog extends DialogWrapper {
     /**
      * @return The name of the branch that will be deleted
      */
-    public String getBranchName() {
+    private String getBranchName() {
         ComboEntry selectedBranch = (ComboEntry) branchComboBox.getModel().getSelectedItem();
         return selectedBranch.getBranchName();
     }
@@ -56,11 +56,11 @@ public abstract class AbstractBranchDeleteDialog extends DialogWrapper {
         return forceDeleteCheckBox.isSelected();
     }
 
-    public boolean hasSelectedBranchBeenMerged() {
+    private boolean hasSelectedBranchBeenMerged() {
         return gitFlowAVHBranchUtil.isBranchMerged(getBranchName(), getCheckMergedToBranchName());
     }
 
-    public void updateMergedInfoText(boolean hasBeenMerged) {
+    private void updateMergedInfoText(boolean hasBeenMerged) {
         if (hasBeenMerged) {
             mergeInfoText.setText(String.format("Branch has been fully merged to %s.", getCheckMergedToBranchName()));
         } else {
@@ -90,7 +90,7 @@ public abstract class AbstractBranchDeleteDialog extends DialogWrapper {
      */
     protected abstract String getCheckMergedToBranchName();
 
-    private ComboBoxModel createBranchComboModel() {
+    private ComboBoxModel<ComboEntry> createBranchComboModel() {
         List<String> branchList = gitFlowAVHBranchUtil.filterBranchListByPrefix(gitFlowAVHBranchUtil.getLocalBranchNames(), getPrefix());
 
         ComboEntry[] entries = new ComboEntry[branchList.size() + 1];
@@ -103,21 +103,21 @@ public abstract class AbstractBranchDeleteDialog extends DialogWrapper {
             entries[i] = new ComboEntry(branchName, branchNameLabel);
 
         }
-        return new DefaultComboBoxModel(entries);
+        return new DefaultComboBoxModel<>(entries);
     }
 
     /**
      * An entry for the branch selection dropdown/combo.
      */
-    protected static class ComboEntry {
+    private static class ComboEntry {
         private String branchName, label;
 
-        public ComboEntry(String branchName, String label) {
+        ComboEntry(String branchName, String label) {
             this.branchName = branchName;
             this.label = label;
         }
 
-        public String getBranchName() {
+        String getBranchName() {
             return branchName;
         }
 
@@ -134,7 +134,7 @@ public abstract class AbstractBranchDeleteDialog extends DialogWrapper {
         private AbstractBranchDeleteDialog deleteDialogClass;
 
 
-        public ItemChangeListener(AbstractBranchDeleteDialog deleteDialog) {
+        ItemChangeListener(AbstractBranchDeleteDialog deleteDialog) {
             deleteDialogClass = deleteDialog;
         }
 

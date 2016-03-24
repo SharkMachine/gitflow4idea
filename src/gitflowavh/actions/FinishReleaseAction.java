@@ -13,14 +13,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class FinishReleaseAction extends GitFlowAVHAction {
 
-    String customReleaseName = null;
-    String customtagMessage = null;
+    private String customReleaseName = null;
+    private String customtagMessage = null;
 
     public FinishReleaseAction() {
         super("Finish Release");
     }
 
-    public FinishReleaseAction(String name, String tagMessage) {
+    private FinishReleaseAction(String name, String tagMessage) {
         super("Finish Release");
         customReleaseName = name;
         customtagMessage = tagMessage;

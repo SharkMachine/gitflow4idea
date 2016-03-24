@@ -10,8 +10,8 @@ import java.util.ArrayList;
 /**
  * Generic line handler (should handle errors etc)
  */
-public abstract class GitFlowAVHLineHandler implements GitLineHandlerListener {
-    ArrayList<String> myErrors=new ArrayList<String>();
+abstract class GitFlowAVHLineHandler implements GitLineHandlerListener {
+    ArrayList<String> myErrors= new ArrayList<>();
     Project myProject;
 
     @Override

@@ -17,13 +17,13 @@ import gitflowavh.GitFlowAVHBranchUtil;
 public abstract class AbstractBranchStartDialog extends DialogWrapper {
     private JPanel contentPane;
     private JTextField branchNameTextField;
-    private JComboBox branchFromCombo;
+    private JComboBox<ComboEntry> branchFromCombo;
     private JLabel branchNameLabel;
 
     private Project project;
     private GitFlowAVHBranchUtil gitFlowAVHBranchUtil;
 
-    public AbstractBranchStartDialog(Project project) {
+    AbstractBranchStartDialog(Project project) {
         super(project, false);
         this.project = project;
         this.gitFlowAVHBranchUtil = new GitFlowAVHBranchUtil(project);
@@ -89,7 +89,7 @@ public abstract class AbstractBranchStartDialog extends DialogWrapper {
         return contentPane;
     }
 
-    private ComboBoxModel createBranchComboModel() {
+    private ComboBoxModel<ComboEntry> createBranchComboModel() {
         final List<String> branchList = gitFlowAVHBranchUtil.getLocalBranchNames();
         final String defaultBranch = getDefaultBranch();
         branchList.remove(defaultBranch);
@@ -101,7 +101,7 @@ public abstract class AbstractBranchStartDialog extends DialogWrapper {
             entries[i] = new ComboEntry(branchName, branchName);
         }
 
-        return new DefaultComboBoxModel(entries);
+        return new DefaultComboBoxModel<>(entries);
     }
 
     /**
@@ -110,12 +110,12 @@ public abstract class AbstractBranchStartDialog extends DialogWrapper {
     private static class ComboEntry {
         private String branchName, label;
 
-        public ComboEntry(String branchName, String label) {
+        ComboEntry(String branchName, String label) {
             this.branchName = branchName;
             this.label = label;
         }
 
-        public String getBranchName() {
+        String getBranchName() {
             return branchName;
         }
 
